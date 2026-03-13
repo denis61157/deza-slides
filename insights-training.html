@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Что такое инсайт в аналитике</title>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap">
+
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           Dark professional theme with teal accent
+           =========================================== */
+        :root {
+            /* Colors */
+            --bg-primary: #0b1120;
+            --bg-secondary: #111d35;
+            --bg-card: #162038;
+            --text-primary: #e8edf5;
+            --text-secondary: #8899b4;
+            --text-muted: #5a6b85;
+            --accent: #00d4aa;
+            --accent-dim: rgba(0, 212, 170, 0.15);
+            --accent-glow: rgba(0, 212, 170, 0.25);
+            --red: #ff6b6b;
+            --red-dim: rgba(255, 107, 107, 0.12);
+            --red-glow: rgba(255, 107, 107, 0.2);
+            --green: #00d4aa;
+            --green-dim: rgba(0, 212, 170, 0.12);
+            --yellow: #ffd93d;
+            --yellow-dim: rgba(255, 217, 61, 0.12);
+            --blue: #4dabf7;
+            --blue-dim: rgba(77, 171, 247, 0.12);
+
+            /* Typography */
+            --font-display: 'Clash Display', sans-serif;
+            --font-body: 'Satoshi', sans-serif;
+            --title-size: clamp(1.8rem, 5vw, 3.8rem);
+            --h2-size: clamp(1.3rem, 3.5vw, 2.4rem);
+            --h3-size: clamp(1rem, 2.2vw, 1.5rem);
+            --body-size: clamp(0.8rem, 1.4vw, 1.1rem);
+            --small-size: clamp(0.7rem, 1vw, 0.9rem);
+            --label-size: clamp(0.6rem, 0.9vw, 0.8rem);
+
+            /* Spacing */
+            --slide-padding: clamp(1.5rem, 5vw, 5rem);
+            --content-gap: clamp(0.8rem, 2vw, 2rem);
+            --element-gap: clamp(0.3rem, 1vw, 0.8rem);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.7s;
+        }
+
+        /* ===========================================
+           BASE STYLES
+           =========================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            height: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===========================================
+           SLIDE CONTAINER
+           =========================================== */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            padding: var(--slide-padding);
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ===========================================
+           TYPOGRAPHY
+           =========================================== */
+        h1 {
+            font-family: var(--font-display);
+            font-size: var(--title-size);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-family: var(--font-display);
+            font-size: var(--h2-size);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            margin-bottom: var(--content-gap);
+        }
+
+        h3 {
+            font-family: var(--font-display);
+            font-size: var(--h3-size);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        p, li {
+            font-size: var(--body-size);
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .label {
+            font-size: var(--label-size);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+        }
+
+        .accent { color: var(--accent); }
+        .red { color: var(--red); }
+        .muted { color: var(--text-muted); }
+
+        /* ===========================================
+           SLIDE TYPES
+           =========================================== */
+
+        /* Title slide */
+        .title-slide {
+            background:
+                radial-gradient(ellipse at 30% 70%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(77, 171, 247, 0.06) 0%, transparent 50%),
+                var(--bg-primary);
+        }
+
+        .title-slide h1 {
+            margin-bottom: clamp(0.5rem, 1.5vw, 1.5rem);
+        }
+
+        .title-slide .subtitle {
+            font-size: var(--h3-size);
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+        }
+
+        .title-slide .meta {
+            position: absolute;
+            bottom: var(--slide-padding);
+            left: var(--slide-padding);
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        /* Comparison slide — two columns */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(1rem, 3vw, 3rem);
+            margin-top: var(--content-gap);
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: clamp(1rem, 2.5vw, 2rem);
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .comparison-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .comparison-card.bad::before {
+            background: var(--red);
+            box-shadow: 0 0 20px var(--red-glow);
+        }
+
+        .comparison-card.good::before {
+            background: var(--green);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .card-label {
+            font-size: var(--label-size);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: clamp(0.5rem, 1vw, 1rem);
+        }
+
+        .comparison-card.bad .card-label { color: var(--red); }
+        .comparison-card.good .card-label { color: var(--green); }
+
+        .comparison-card h3 {
+            margin-bottom: clamp(0.4rem, 0.8vw, 0.8rem);
+            font-size: clamp(0.95rem, 1.8vw, 1.3rem);
+        }
+
+        .comparison-card p {
+            font-size: var(--small-size);
+            line-height: 1.5;
+        }
+
+        .comparison-card .tag {
+            display: inline-block;
+            padding: 0.2em 0.6em;
+            border-radius: 6px;
+            font-size: var(--label-size);
+            font-weight: 600;
+            margin-top: clamp(0.3rem, 0.6vw, 0.6rem);
+        }
+
+        .comparison-card.bad .tag {
+            background: var(--red-dim);
+            color: var(--red);
+        }
+
+        .comparison-card.good .tag {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        /* Formula card */
+        .formula-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            border-radius: 16px;
+            padding: clamp(1.5rem, 3vw, 3rem);
+            margin-top: var(--content-gap);
+            position: relative;
+        }
+
+        .formula-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0,212,170,0.15), transparent 60%);
+            z-index: -1;
+        }
+
+        .formula-steps {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.6rem, 1.2vw, 1.2rem);
+        }
+
+        .formula-step {
+            display: flex;
+            align-items: center;
+            gap: clamp(0.6rem, 1.2vw, 1.2rem);
+        }
+
+        .formula-step .num {
+            flex-shrink: 0;
+            width: clamp(2rem, 3vw, 2.8rem);
+            height: clamp(2rem, 3vw, 2.8rem);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--body-size);
+        }
+
+        .formula-step:nth-child(1) .num { background: var(--blue-dim); color: var(--blue); }
+        .formula-step:nth-child(2) .num { background: var(--yellow-dim); color: var(--yellow); }
+        .formula-step:nth-child(3) .num { background: var(--accent-dim); color: var(--accent); }
+        .formula-step:nth-child(4) .num { background: rgba(167, 139, 250, 0.12); color: #a78bfa; }
+
+        .formula-step .text {
+            font-size: var(--body-size);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .formula-step .text span {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Methodology grid */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: clamp(0.6rem, 1.2vw, 1rem);
+            margin-top: var(--content-gap);
+        }
+
+        .method-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: clamp(0.8rem, 1.8vw, 1.5rem);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: border-color 0.3s ease;
+        }
+
+        .method-card:hover {
+            border-color: rgba(0, 212, 170, 0.2);
+        }
+
+        .method-card .icon {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            margin-bottom: clamp(0.3rem, 0.6vw, 0.6rem);
+        }
+
+        .method-card h3 {
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            margin-bottom: clamp(0.2rem, 0.4vw, 0.4rem);
+        }
+
+        .method-card p {
+            font-size: var(--small-size);
+            line-height: 1.4;
+        }
+
+        /* Escalation ladder */
+        .ladder {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.3rem, 0.8vw, 0.8rem);
+            margin-top: var(--content-gap);
+        }
+
+        .ladder-step {
+            display: flex;
+            align-items: stretch;
+            gap: clamp(0.6rem, 1.5vw, 1.5rem);
+        }
+
+        .ladder-line {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: clamp(2rem, 3vw, 3rem);
+            flex-shrink: 0;
+        }
+
+        .ladder-dot {
+            width: clamp(0.7rem, 1.2vw, 1rem);
+            height: clamp(0.7rem, 1.2vw, 1rem);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 0.3rem;
+        }
+
+        .ladder-connector {
+            width: 2px;
+            flex: 1;
+            margin-top: 4px;
+        }
+
+        .ladder-step:nth-child(1) .ladder-dot { background: var(--text-muted); }
+        .ladder-step:nth-child(1) .ladder-connector { background: linear-gradient(var(--text-muted), var(--yellow)); }
+        .ladder-step:nth-child(2) .ladder-dot { background: var(--yellow); }
+        .ladder-step:nth-child(2) .ladder-connector { background: linear-gradient(var(--yellow), var(--accent)); }
+        .ladder-step:nth-child(3) .ladder-dot { background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+
+        .ladder-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: clamp(0.8rem, 1.5vw, 1.5rem);
+            flex: 1;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ladder-content h3 {
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            margin-bottom: clamp(0.2rem, 0.3vw, 0.3rem);
+        }
+
+        .ladder-content p {
+            font-size: var(--small-size);
+            line-height: 1.4;
+        }
+
+        .ladder-content .example {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: var(--small-size);
+            margin-top: clamp(0.2rem, 0.3vw, 0.4rem);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin-top: var(--content-gap);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(0.5rem, 1vw, 1rem);
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(0.5rem, 1vw, 1rem);
+            font-size: var(--body-size);
+            color: var(--text-primary);
+        }
+
+        .checklist .check {
+            flex-shrink: 0;
+            width: clamp(1.3rem, 2vw, 1.8rem);
+            height: clamp(1.3rem, 2vw, 1.8rem);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--small-size);
+            margin-top: 0.1em;
+        }
+
+        .checklist .check.yes {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .checklist .check.no {
+            background: var(--red-dim);
+            color: var(--red);
+        }
+
+        /* Section divider */
+        .section-divider {
+            background:
+                radial-gradient(ellipse at 50% 50%, rgba(0, 212, 170, 0.1) 0%, transparent 60%),
+                var(--bg-primary);
+        }
+
+        .section-divider .slide-content {
+            align-items: center;
+            text-align: center;
+        }
+
+        .section-number {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 700;
+            color: rgba(0, 212, 170, 0.15);
+            line-height: 1;
+            margin-bottom: clamp(0.3rem, 1vw, 1rem);
+        }
+
+        /* ===========================================
+           PROGRESS BAR
+           =========================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            z-index: 100;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* ===========================================
+           NAV DOTS
+           =========================================== */
+        .nav-dots {
+            position: fixed;
+            right: clamp(0.8rem, 2vw, 2rem);
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .nav-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent-glow);
+            transform: scale(1.3);
+        }
+
+        .nav-dot:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            bottom: clamp(0.8rem, 2vw, 2rem);
+            right: clamp(0.8rem, 2vw, 2rem);
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            z-index: 100;
+        }
+
+        /* ===========================================
+           ANIMATIONS
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(1) { transition-delay: 0.05s; }
+        .reveal:nth-child(2) { transition-delay: 0.15s; }
+        .reveal:nth-child(3) { transition-delay: 0.25s; }
+        .reveal:nth-child(4) { transition-delay: 0.35s; }
+        .reveal:nth-child(5) { transition-delay: 0.45s; }
+
+        .reveal-children > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s var(--ease-out-expo),
+                        transform 0.5s var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal-children > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+        .slide.visible .reveal-children > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+        .slide.visible .reveal-children > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.3s; }
+        .slide.visible .reveal-children > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+        .slide.visible .reveal-children > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+        .slide.visible .reveal-children > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+
+        /* Decorative grid background */
+        .grid-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* ===========================================
+           RESPONSIVE BREAKPOINTS
+           =========================================== */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2.5rem);
+                --content-gap: clamp(0.5rem, 1.5vw, 1rem);
+                --title-size: clamp(1.5rem, 4.5vw, 2.8rem);
+                --h2-size: clamp(1.1rem, 3vw, 1.8rem);
+            }
+        }
+
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.8rem, 2.5vw, 1.5rem);
+                --content-gap: clamp(0.4rem, 1vw, 0.8rem);
+            }
+            .nav-dots, .slide-counter { display: none; }
+        }
+
+        @media (max-height: 500px) {
+            :root {
+                --title-size: clamp(1.2rem, 4vw, 1.8rem);
+                --h2-size: clamp(1rem, 2.5vw, 1.4rem);
+                --body-size: clamp(0.7rem, 1vw, 0.85rem);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+                gap: clamp(0.5rem, 2vw, 1rem);
+            }
+            .method-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation dots -->
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- Slide counter -->
+    <div class="slide-counter" id="slideCounter"></div>
+
+    <!-- ============================================
+         SLIDE 1: TITLE
+         ============================================ -->
+    <section class="slide title-slide grid-bg">
+        <div class="slide-content">
+            <span class="label reveal">Обучение аналитиков</span>
+            <h1 class="reveal">Что такое <span class="accent">инсайт</span><br>в аналитике</h1>
+            <p class="subtitle reveal">Как отличить цифру от вывода, который меняет решение</p>
+            <div class="meta reveal">16 марта 2026</div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 2: LADDER — METRIC → OBSERVATION → INSIGHT
+         ============================================ -->
+    <section class="slide grid-bg">
+        <div class="slide-content">
+            <h2 class="reveal">Три уровня работы с данными</h2>
+            <div class="ladder reveal-children">
+                <div class="ladder-step">
+                    <div class="ladder-line">
+                        <div class="ladder-dot"></div>
+                        <div class="ladder-connector"></div>
+                    </div>
+                    <div class="ladder-content">
+                        <h3 style="color: var(--text-muted);">Метрика</h3>
+                        <p>Число без контекста. Просто факт.</p>
+                        <p class="example">«Конверсия за март — 3.2%»</p>
+                    </div>
+                </div>
+                <div class="ladder-step">
+                    <div class="ladder-line">
+                        <div class="ladder-dot"></div>
+                        <div class="ladder-connector"></div>
+                    </div>
+                    <div class="ladder-content">
+                        <h3 style="color: var(--yellow);">Наблюдение</h3>
+                        <p>Изменение или паттерн. «Что-то происходит».</p>
+                        <p class="example">«Конверсия упала на 15% за неделю»</p>
+                    </div>
+                </div>
+                <div class="ladder-step">
+                    <div class="ladder-line">
+                        <div class="ladder-dot"></div>
+                    </div>
+                    <div class="ladder-content" style="border-color: rgba(0,212,170,0.15);">
+                        <h3 style="color: var(--accent);">Инсайт</h3>
+                        <p>Вывод + причина + действие. <strong style="color: var(--text-primary);">Меняет решение.</strong></p>
+                        <p class="example">«Конверсия упала на 15% из-за бага в онбординге на Android 12. Хотфикс вернёт ~200 регистраций/день»</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 3: FORMULA
+         ============================================ -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Формула инсайта</h2>
+            <div class="formula-card reveal">
+                <div class="formula-steps reveal-children">
+                    <div class="formula-step">
+                        <div class="num">1</div>
+                        <div class="text">ЧТО происходит <span>— факт из данных</span></div>
+                    </div>
+                    <div class="formula-step">
+                        <div class="num">2</div>
+                        <div class="text">ПОЧЕМУ это происходит <span>— причинно-следственная связь</span></div>
+                    </div>
+                    <div class="formula-step">
+                        <div class="num">3</div>
+                        <div class="text">ЧТО ДЕЛАТЬ <span>— конкретная рекомендация</span></div>
+                    </div>
+                    <div class="formula-step">
+                        <div class="num">4</div>
+                        <div class="text">СКОЛЬКО это даст <span>— оценка эффекта</span></div>
+                    </div>
+                </div>
+            </div>
+            <p class="reveal" style="margin-top: var(--content-gap); color: var(--text-muted); font-size: var(--small-size);">Нет хотя бы одного элемента → это ещё не инсайт, а наблюдение</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 4: SECTION DIVIDER — EXAMPLES
+         ============================================ -->
+    <section class="slide section-divider">
+        <div class="slide-content">
+            <div class="section-number reveal">01</div>
+            <h2 class="reveal" style="margin-bottom: 0;">Примеры из нашей практики</h2>
+            <p class="reveal" style="color: var(--text-muted); font-size: var(--body-size);">Не инсайт vs инсайт — на реальных кейсах</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 5: EXAMPLE 1 — PRICING THAILAND
+         ============================================ -->
+    <section class="slide grid-bg">
+        <div class="slide-content">
+            <span class="label reveal">Пример 1: Ценообразование</span>
+            <h2 class="reveal">Таиланд: цена ниже рынка</h2>
+            <div class="comparison reveal-children">
+                <div class="comparison-card bad">
+                    <div class="card-label">Не инсайт</div>
+                    <h3>«Наша цена на Таиланд на 4% ниже рынка»</h3>
+                    <p>Это метрика. Ну ниже — и что? Непонятно, хорошо это или плохо, и что делать.</p>
+                    <div class="tag">Нет действия</div>
+                </div>
+                <div class="comparison-card good">
+                    <div class="card-label">Инсайт</div>
+                    <h3>«По Таиланду мы №2 по объёму, но продаём на 4% дешевле рынка»</h3>
+                    <p>Клиенты выбирают нас не за цену, а за покрытие. Повышение на 2% даст ~X руб. доп. маржи без потери доли.</p>
+                    <div class="tag">Факт + причина + действие + эффект</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 6: EXAMPLE 2 — RFM
+         ============================================ -->
+    <section class="slide grid-bg">
+        <div class="slide-content">
+            <span class="label reveal">Пример 2: RFM-сегментация</span>
+            <h2 class="reveal">Кого прозванивать первыми</h2>
+            <div class="comparison reveal-children">
+                <div class="comparison-card bad">
+                    <div class="card-label">Не инсайт</div>
+                    <h3>«У нас 340 клиентов в сегменте "срочно нельзя терять"»</h3>
+                    <p>Это просто число из отчёта. Сегмент назван, но что с ним делать — неясно.</p>
+                    <div class="tag">Просто метрика</div>
+                </div>
+                <div class="comparison-card good">
+                    <div class="card-label">Инсайт</div>
+                    <h3>«340 клиентов, средний чек 180К — ушли из-за отсутствия раннего бронирования»</h3>
+                    <p>Прозвон 50 из них показал: 60% хотят early bird. Запуск предложений за 4 мес. до сезона вернёт ~100 клиентов (~18М).</p>
+                    <div class="tag">Причина оттока + конкретный оффер + прогноз</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 7: EXAMPLE 3 — CLUSTERS
+         ============================================ -->
+    <section class="slide grid-bg">
+        <div class="slide-content">
+            <span class="label reveal">Пример 3: Поведенческие кластеры</span>
+            <h2 class="reveal">Кластер → конкретный оффер</h2>
+            <div class="comparison reveal-children">
+                <div class="comparison-card bad">
+                    <div class="card-label">Не инсайт</div>
+                    <h3>«Мы выделили 5 поведенческих кластеров клиентов»</h3>
+                    <p>Это описание проделанной работы. Кластеры есть — а бизнесу-то что с этим делать?</p>
+                    <div class="tag">Описание, не вывод</div>
+                </div>
+                <div class="comparison-card good">
+                    <div class="card-label">Инсайт</div>
+                    <h3>«"Планируют заранее" — 15% базы, но чек на 40% выше среднего»</h3>
+                    <p>Сейчас мы ничего не предлагаем им заранее. Рассылка early bird за 5 мес. до сезона на этот сегмент → X бронирований.</p>
+                    <div class="tag">Сегмент + gap + конкретное действие</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 8: EXAMPLE 4 — COVERAGE
+         ============================================ -->
+    <section class="slide grid-bg">
+        <div class="slide-content">
+            <span class="label reveal">Пример 4: Покрытие ассортимента</span>
+            <h2 class="reveal">Почему скачет покрытие</h2>
+            <div class="comparison reveal-children">
+                <div class="comparison-card bad">
+                    <div class="card-label">Не инсайт</div>
+                    <h3>«Покрытие ассортимента скачет от 45% до 60%»</h3>
+                    <p>Факт зафиксирован, но без причины и плана действий это просто тревожное наблюдение.</p>
+                    <div class="tag">Наблюдение без причины</div>
+                </div>
+                <div class="comparison-card good">
+                    <div class="card-label">Инсайт</div>
+                    <h3>«Покрытие падает до 45% по понедельникам — выгрузки обновляются с задержкой 24-48ч»</h3>
+                    <p>В понедельник-вторник теряем ~X заявок из-за устаревших предложений. Автообновление выгрузки в выходные закроет этот gap.</p>
+                    <div class="tag">Паттерн + корневая причина + решение</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 9: CHECKLIST
+         ============================================ -->
+    <section class="slide">
+        <div class="slide-content">
+            <h2 class="reveal">Чеклист: это инсайт?</h2>
+            <ul class="checklist reveal-children">
+                <li>
+                    <div class="check yes">✓</div>
+                    <div><strong>Можно принять решение?</strong><br><span style="color: var(--text-secondary);">Если нет — это статистика, не инсайт</span></div>
+                </li>
+                <li>
+                    <div class="check yes">✓</div>
+                    <div><strong>Это неочевидно?</strong><br><span style="color: var(--text-secondary);">Если все и так знали — ценность низкая</span></div>
+                </li>
+                <li>
+                    <div class="check yes">✓</div>
+                    <div><strong>Подкреплено данными?</strong><br><span style="color: var(--text-secondary);">Если нет — это гипотеза, а не инсайт</span></div>
+                </li>
+                <li>
+                    <div class="check yes">✓</div>
+                    <div><strong>Есть оценка эффекта?</strong><br><span style="color: var(--text-secondary);">Хотя бы порядок: сотни клиентов, миллионы рублей</span></div>
+                </li>
+                <li>
+                    <div class="check no">✗</div>
+                    <div><strong style="color: var(--red);">«Красный флаг»: можно заменить на любую компанию?</strong><br><span style="color: var(--text-secondary);">Если формулировка универсальна — это не инсайт, а учебник</span></div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 10: SECTION DIVIDER — METHODOLOGIES
+         ============================================ -->
+    <section class="slide section-divider">
+        <div class="slide-content">
+            <div class="section-number reveal">02</div>
+            <h2 class="reveal" style="margin-bottom: 0;">Как добывать инсайты</h2>
+            <p class="reveal" style="color: var(--text-muted); font-size: var(--body-size);">Методологии и подходы</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 11: DECOMPOSITION
+         ============================================ -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="label reveal">Метод 1</span>
+            <h2 class="reveal">Декомпозиция метрик</h2>
+            <p class="reveal" style="margin-bottom: var(--content-gap);">Разбиваешь верхнеуровневую метрику на составляющие — ищешь, где аномалия</p>
+            <div class="formula-card reveal">
+                <div class="formula-steps reveal-children">
+                    <div class="formula-step">
+                        <div class="num" style="background: var(--accent-dim); color: var(--accent);">→</div>
+                        <div class="text">Выручка</div>
+                    </div>
+                    <div class="formula-step">
+                        <div class="num" style="background: var(--blue-dim); color: var(--blue);">→</div>
+                        <div class="text">Заявки <span>×</span> Конверсия <span>×</span> Средний чек</div>
+                    </div>
+                    <div class="formula-step">
+                        <div class="num" style="background: var(--yellow-dim); color: var(--yellow);">→</div>
+                        <div class="text">По направлениям <span>→ по операторам → по неделям</span></div>
+                    </div>
+                    <div class="formula-step">
+                        <div class="num" style="background: var(--red-dim); color: var(--red);">!</div>
+                        <div class="text">Общая метрика «ок», но одна ветка просела <span>— там инсайт</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 12: SEGMENTATION
+         ============================================ -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="label reveal">Метод 2</span>
+            <h2 class="reveal">Сегментация</h2>
+            <div class="method-grid reveal-children">
+                <div class="method-card">
+                    <div class="icon" style="color: var(--accent);">RFM</div>
+                    <h3>Recency, Frequency, Monetary</h3>
+                    <p>Кто лучшие клиенты, кого теряем, кого можно вернуть. Классика для CRM и маркетинга.</p>
+                </div>
+                <div class="method-card">
+                    <div class="icon" style="color: var(--blue);">K-means</div>
+                    <h3>Кластерный анализ</h3>
+                    <p>Группировка по поведению, когда заранее не знаешь сегменты. Алгоритм находит паттерны сам.</p>
+                </div>
+                <div class="method-card">
+                    <div class="icon" style="color: var(--yellow);">Когорты</div>
+                    <h3>Когортный анализ</h3>
+                    <p>Сравнение групп клиентов по времени первой покупки. Показывает, как меняется retention.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 13: BENCHMARKING + GAP
+         ============================================ -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="label reveal">Методы 3–4</span>
+            <h2 class="reveal">Сравнение и Gap-анализ</h2>
+            <div class="comparison reveal-children" style="margin-top: var(--content-gap);">
+                <div class="comparison-card good" style="border-color: rgba(77,171,247,0.2);">
+                    <div class="card-label" style="color: var(--blue);">Benchmarking</div>
+                    <h3>Сравнение с эталоном</h3>
+                    <p>Себя с рынком, конкурентами или собственным прошлым периодом.</p>
+                    <p style="margin-top: 0.5em; color: var(--text-primary); font-size: var(--small-size);"><strong>Формула:</strong> у нас X, у рынка Y, разница из-за Z → делаем W</p>
+                </div>
+                <div class="comparison-card good" style="border-color: rgba(255,217,61,0.2);">
+                    <div class="card-label" style="color: var(--yellow);">Gap-анализ</div>
+                    <h3>«Что должно быть» vs «что есть»</h3>
+                    <p>Какие туры есть у оператора, но не загружены у нас? Где спрос, но нет предложения?</p>
+                    <p style="margin-top: 0.5em; color: var(--text-primary); font-size: var(--small-size);"><strong>Наш кейс:</strong> покрытие ассортимента, вылеты без предложения</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 14: FUNNEL + ANOMALIES
+         ============================================ -->
+    <section class="slide">
+        <div class="slide-content">
+            <span class="label reveal">Методы 5–6</span>
+            <h2 class="reveal">Воронка и аномалии</h2>
+            <div class="comparison reveal-children" style="margin-top: var(--content-gap);">
+                <div class="comparison-card good" style="border-color: rgba(167,139,250,0.2);">
+                    <div class="card-label" style="color: #a78bfa;">Воронка (Funnel)</div>
+                    <h3>Путь клиента по шагам</h3>
+                    <p>Поиск → просмотр → заявка → бронирование → оплата. Ищешь самый большой drop-off и разбираешь почему.</p>
+                    <p style="margin-top: 0.5em; color: var(--text-primary); font-size: var(--small-size);"><strong>Пример:</strong> трекинг Яндекс.Директ — что работает лучше/хуже</p>
+                </div>
+                <div class="comparison-card good" style="border-color: rgba(255,107,107,0.2);">
+                    <div class="card-label" style="color: var(--red);">Аномалии</div>
+                    <h3>Статистические выбросы</h3>
+                    <p>Выявление отклонений, которые искажают картину или сигнализируют о проблеме.</p>
+                    <p style="margin-top: 0.5em; color: var(--text-primary); font-size: var(--small-size);"><strong>Наш кейс:</strong> Алиант с 66К заявок — аномалия, искажавшая все метрики</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 15: TAKEAWAY
+         ============================================ -->
+    <section class="slide section-divider">
+        <div class="slide-content">
+            <h2 class="reveal" style="font-size: var(--title-size); margin-bottom: var(--content-gap);">Метрика говорит <span class="muted">«что»</span></h2>
+            <h2 class="reveal" style="font-size: var(--title-size); margin-bottom: var(--content-gap);">Анализ говорит <span style="color: var(--yellow);">«почему»</span></h2>
+            <h2 class="reveal" style="font-size: var(--title-size);">Инсайт говорит <span class="accent">«делай это»</span></h2>
+        </div>
+    </section>
+
+    <!-- ============================================
+       JAVASCRIPT: Slide Controller
+       ============================================ -->
+    <script>
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.progressBar = document.getElementById('progressBar');
+                this.navDots = document.getElementById('navDots');
+                this.slideCounter = document.getElementById('slideCounter');
+                this.currentSlide = 0;
+
+                this.createNavDots();
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.updateProgress();
+            }
+
+            createNavDots() {
+                this.slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot';
+                    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+                    dot.addEventListener('click', () => {
+                        this.slides[i].scrollIntoView({ behavior: 'smooth' });
+                    });
+                    this.navDots.appendChild(dot);
+                });
+                this.dots = this.navDots.querySelectorAll('.nav-dot');
+            }
+
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const index = Array.from(this.slides).indexOf(entry.target);
+                            this.currentSlide = index;
+                            this.updateProgress();
+                            this.updateDots();
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                        e.preventDefault();
+                        this.goToSlide(this.currentSlide + 1);
+                    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.goToSlide(this.currentSlide - 1);
+                    }
+                });
+            }
+
+            setupTouchNav() {
+                let startY = 0;
+                document.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    const diff = startY - e.changedTouches[0].clientY;
+                    if (Math.abs(diff) > 50) {
+                        if (diff > 0) {
+                            this.goToSlide(this.currentSlide + 1);
+                        } else {
+                            this.goToSlide(this.currentSlide - 1);
+                        }
+                    }
+                }, { passive: true });
+            }
+
+            goToSlide(index) {
+                if (index >= 0 && index < this.slides.length) {
+                    this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            updateProgress() {
+                const progress = ((this.currentSlide + 1) / this.slides.length) * 100;
+                this.progressBar.style.width = progress + '%';
+                this.slideCounter.textContent = `${this.currentSlide + 1} / ${this.slides.length}`;
+            }
+
+            updateDots() {
+                this.dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === this.currentSlide);
+                });
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            new SlidePresentation();
+        });
+    </script>
+</body>
+</html>
